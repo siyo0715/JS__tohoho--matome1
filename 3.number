@@ -1,0 +1,156 @@
+_________________________________数値________________________________________________
+
+
+JavaScript では数値として10進数、16進数、実数、浮動小数等を使用できます.
+
+0x(または0X)で始まる数字は16進数と解釈されます。
+
+以前は 0(ゼロ) で始まる数値を8進数としていましたが廃止され、
+代わりに ES2015(ES6) では、0o(ゼロオー) で始まる8進数や、0b(ゼロビー) で始まる2進数がサポートされました。
+Chrome, Firefox, Edge ではサポートされていますが、IE11 ではサポートされていません。
+
+0(ゼロ)で始まる数字は、後に続く数字がすべて 0～7 であれば 8進数として、
+8～9 を含んでいれば10進数として解釈されます。
+
+____________________________数値オブジェクト____________________________________________
+
+number = new Number(value)
+value を値として持つ数値オブジェクトを生成します。
+「すべての型をオブジェクトタイプとして実装する」というポリシーで用意されていますが、
+あまり用いられることはありません。数値と数値オブジェクトは厳密には異なります。
+「xx = Number(value)」は、文字列を数値に変換するビルトイン関数で、new Number() とは異なります。
+
+___________________________文字列を数値に変換する_________________________________________
+
+
+◆ number = Number(value)
+◆ number = parseInt(str, radix)
+◆ number = parseFloat(str)
+◆ number = Number.parseInt(str, radix)
+◆ number = Number.parseFloat(str)
+文字列を数値に変換するにはビルトイン関数の parseInt()、parseFloat()、Number() を用いるか、
+0 を減算することによっても、変換できます。0 を加算すると文字列の連結になってしまうため、
+数値には変換できません。
+
+str = "123.4";
+num1 = Number(str);        // 数値123.4に変換する
+num2 = parseInt(str);      // 整数123に変換する
+num3 = parseFloat(str);    // 数値123.4に変換する
+num4 = str - 0;            // 数値123.4に変換する
+num5 = str + 0;            // 文字列 "123.40" になってしまう
+______________________________________________________________________________________
+
+_______________________________非数＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
+◆ NaN
+◆ Number.NaN
+NaN および Number.NaN は、無効な数値を示す特別値です。
+下記など、結果を数値で表すことができない数値を求めようとした場合、結果が NaN となります。
+
+console.log(NaN);               // => NaN
+console.log(Number.NaN);        // => NaN
+console.log(0 / 0);             // => NaN
+console.log(parseInt("ABC"));   // => NaN
+console.log(Math.sqrt(-1));     // => NaN
+
+◆ isNaN(value)
+◆ Number.isNaN(value)
+NaN は == や === などの比較演算子で比較することができません。
+結果が NaN となったか否かは、isNaN() グローバル関数、
+または ES2015(ES6) で規定された Number.isNaN() クラスメソッドを用います。
+両者の動作は多少異なります。isNaN() は数値変換により NaN と判定される値をすべて true と判定しますが、
+Number.isNaN() はすでに NaN であると判定された値のみを true と判定します。
+
+console.log(isNaN(NaN));               // => true
+console.log(Number.isNaN(NaN));        // => true
+
+console.log(isNaN(0 / 0));             // => true
+console.log(Number.isNaN(0 / 0));      // => 演算した結果を検証するので true
+
+console.log(isNaN("ABC"));             // => "ABC" を数値変換すると NaN になるので true
+console.log(Number.isNaN("ABC"));      // => まだ NaN になっていないので false
+
+＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿限界値＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
+◆ Number.MAX_VALUE
+◆ Number.MIN_VALUE
+
+MAX_VALUE は利用可能な最大値（約 1.79769e308）。
+MIN_VALUE は利用可能な最小値（約5e-324）を示します。
+
+xx = 1.8 * 1.0e308;
+if (xx >= Number.MAX_VALUE) {
+   alert("計算可能な範囲を超えました");
+}
+
+◆ Number.POSITIVE_INFINITY
+◆ Number.NEGATIVE_INFINITY
+POSITIVE_INFINITY は正の無限大を示す特別な数値。NEGATIVE_INFINITY は負の無限大を示す特別な数値を示します。乗算などの演算が、JavaScript で扱える値の範囲を超えた場合をチェックすることができます。
+
+
+xx = 1.8 * 1.0e308;
+if ((xx == Number.POSITIVE_INFINITY)
+ || (xx == Number.NEGATIVE_INFINITY)) {
+   alert("計算可能な範囲を超えました");
+}
+
+◆ isFinite(value)
+◆ Number.isFinite(value)
+isFinite() や Number.isFinite() は、value が有効な数値(有理数)であることを検査します。
+isFinite() はグローバル関数、Number.isFinite() はクラスメソッドとして定義されていますが、
+同じ動きをします。
+
+JavaScript
+console.log(isFinite(1.23e999));                  // => false
+console.log(isFinite(Infinity));                  // => false
+console.log(isFinite(-Infinity));                 // => false
+console.log(isFinite(NaN));                       // => false
+console.log(isFinite(Number.NEGATIVE_INFINITY));  // => false
+console.log(isFinite(Number.POSITIVE_INFINITY));  // => false
+
+console.log(isFinite(0));                         // => true
+console.log(isFinite(1.23e45));                   // => true
+console.log(isFinite(Number.MAX_VALUE));          // => true
+console.log(isFinite(Number.MIN_VALUE));          // => true
+
+◆ Number.isInteger(value)
+
+isInteger() は、value が有効な整数、-MAX_VALUE ～ MAX_VALUE の間の整数であるかどうかを検査します。
+console.log(Number.isInteger(1.798e308));          // => false (大きすぎ)
+console.log(Number.isInteger(1.797e308));          // => true
+console.log(Number.isInteger(-1.797e308));         // => true
+console.log(Number.isInteger(-1.798e308));         // => false (小さすぎ)
+
+_________________________________表記変換_______________________________________
+
+number.toString(radix)
+toString() を用いて、数値を radix 進数（2～36。省略時は10）の文字列に変換することができます。例えば下記の例では、65535 を 16 進数を示す文字列 "ffff" に変換します。
+
+JavaScript
+xx = 65535;
+console.log(xx.toString(16));
+◆ number.toExponential([digit])
+number を 1.23e4 の様な指数表記の文字列に変換します。digit には小数以下の桁数を指定します。
+
+JavaScript
+var xx = 123456;
+console.log(xx.toExponential());     // => 1.23456e+5
+console.log(xx.toExponential(2));    // => 1.23e+5
+◆ number.toFixed([digit])
+number を 1.23 の様な整数または固定小数点表記の文字列に変換します。digit には小数以下の桁数を指定します。
+
+JavaScript
+var xx = 1.234e5;
+console.log(xx.toFixed());     // => 123400
+console.log(xx.toFixed(2));    // => 123400.00
+◆ number.toPrecision([precision])
+number を precision で指定した有効桁の表記の文字列に変換します。
+
+JavaScript
+xx = 123456789;
+console.log(xx.toPrecision());     // => 123456789
+console.log(xx.toPrecision(3));    // => 1.23e+8
+xx = 1.23456789;
+console.log(xx.toPrecision(3));    // => 1.23
+xx = 0.0000123456789;
+console.log(xx.toPrecision(3));    // => 0.0000123
+xx = 1.23456789e30;
+console.log(xx.toPrecision(3));    // => 1.23e+30
